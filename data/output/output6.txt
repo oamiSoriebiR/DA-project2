@@ -1,0 +1,32 @@
+Web: web0
+  Name: a
+  Points: 1+,2,3,10-
+  Register: r0
+
+Web: web1
+  Name: b
+  Points: 2+,3,4,5-
+  Register: r1
+
+Web: web2
+  Name: c
+  Points: 4+,5,6,7-
+  Register: r0
+
+Web: web3
+  Name: d
+  Points: 6+,7,8,9-
+  Register: r1
+
+Web: web4
+  Name: e
+  Points: 8+,9,10,11-
+  Register: r2
+
+
+=== Summary ===
+Total webs: 5
+Allocated to registers: 5
+Spilled to memory: 0
+Registers used: r0, r1, r2
+Status: Allocation succeeded

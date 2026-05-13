@@ -1,0 +1,17 @@
+Web: web0
+  Name: i
+  Points: 1+,2,3,4,5,6,9,10,11,12,13,14-,20
+  Register: r0
+
+Web: web1
+  Name: sum
+  Points: 7+,8,9,10-
+  Register: r1
+
+
+=== Summary ===
+Total webs: 2
+Allocated to registers: 2
+Spilled to memory: 0
+Registers used: r0, r1
+Status: Allocation succeeded

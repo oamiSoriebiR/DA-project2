@@ -1,0 +1,29 @@
+Web: web0
+  Name: t1
+  Points: 1+,2-
+  Register: r0
+
+Web: web1
+  Name: t2
+  Points: 2+,3-
+  Register: M
+  Warning: Web spilled to memory
+
+Web: web2
+  Name: t3
+  Points: 3+,4-
+  Register: M
+  Warning: Web spilled to memory
+
+Web: web3
+  Name: t4
+  Points: 4+,5-
+  Register: r0
+
+
+=== Summary ===
+Total webs: 4
+Allocated to registers: 2
+Spilled to memory: 2
+Registers used: r0
+Status: Coloring failed: 2 webs could not be colored. Try spilling algorithm with more spill slots.
