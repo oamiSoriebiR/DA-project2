@@ -243,7 +243,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	if (v1 == NULL || v2 == NULL)
 		return false;
 	v1->addEdge(v2,w);
-    v2->incoming.push_back(Edge<T>(v1,w)); // incoming edges
+    // v2->incoming.push_back(Edge<T>(v1,w)); // incoming edges
 	return true;
 }
 
@@ -269,7 +269,7 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 	if (v1 == NULL || v2 == NULL)
 		return false;
 
-	return v1->removeEdgeTo(v2) && v2->removeEdgeFrom(v1);
+	return v1->removeEdgeTo(v2); // && v2->removeEdgeTo(v1);
 }
 
 /*
@@ -329,7 +329,7 @@ inline void  Graph<T>::emitDOTFile(string gname) {
     ofstream g_dot_file;
 
     g_dot_file.open (gname+".gv");
-    g_dot_file << "digraph { \n";
+    g_dot_file << "graph { \n";
 
 
     g_dot_file << "labelloc  = top;\n";
@@ -342,7 +342,7 @@ inline void  Graph<T>::emitDOTFile(string gname) {
         g_dot_file << "  " << v->getInfo() << ";\n";  // Print isolated node
         for (auto & e : v->getAdj()) {
             auto w = e.getDest();
-            g_dot_file << "  " << v->getInfo() << " -> " << w->getInfo() << ";\n";
+            g_dot_file << "  " << v->getInfo() << " -- " << w->getInfo() << ";\n";
         }
     }
 

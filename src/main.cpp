@@ -1,9 +1,11 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "Graph.h"
 #include "datastructures.h"
 #include "parser.h"
 #include "web.h"
+#include "interference.h"
 
 void runMenu();
 bool fileExists(const std::string& filename);
@@ -16,6 +18,8 @@ std::string allocation;
 std::vector<LiveRange> ranges;
 AssignmentConfig config;
 std::vector<Web> webs;
+Graph<int> interference;
+
 
 int main(int argc, char* argv[]) {
     
@@ -117,11 +121,24 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
     webs = webLinking(ranges);
 
     /* For debugging purposes
+    std::cout << "-----Web details-----\n\n";
     for (Web web : webs){
         std::cout << "Web " << web.id << "\nVariable: " << web.varName << " Lines: ";
         for (int value : web.lines) std::cout << value << " ";
         std::cout << std::endl;
     }*/
-   
+    
+    interference = buildInterferenceGraph(webs);
+
+    /* For debugging purposes 
+    std::cout << "-----Graph details-----\n\n";
+    for (Vertex<int> *vertex : interference.getVertexSet()){
+        std::cout << "Vertex " << vertex->getInfo() << "\nAdjacent Vertexes: ";
+        for (Edge<int> e : vertex->getAdj()){
+            std::cout << e.getDest()->getInfo() << " ";
+        }
+        std::cout << std::endl;
+    }*/
+    
     return 1;   
 }
