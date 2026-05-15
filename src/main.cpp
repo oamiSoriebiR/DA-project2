@@ -3,6 +3,7 @@
 #include <fstream>
 #include "datastructures.h"
 #include "parser.h"
+#include "web.h"
 
 void runMenu();
 bool fileExists(const std::string& filename);
@@ -14,13 +15,15 @@ std::string allocation;
 
 std::vector<LiveRange> ranges;
 AssignmentConfig config;
-
+std::vector<Web> webs;
 
 int main(int argc, char* argv[]) {
     
     // CLI mode
     if(argc == 1){
-        runMenu();
+        while (true){
+            runMenu();
+        }
         return 0;
     }
     // Batch mode "myProg -b ranges.txt registers.txt allocation.txt"
@@ -48,10 +51,7 @@ void runMenu() {
     std::cout << "Select an option: ";
 
     int choice;
-    std::cin >> choice;
-    std::string range;
-    std::string registers;
-    std::string allocation;
+    std::cin >> choice; 
     
     switch (choice) {
         case 1:
@@ -113,4 +113,15 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
     config = parseRegisters(registersFile);
     
     std::cout << "Algorithm: " << config.algorithm << std::endl;
+
+    webs = webLinking(ranges);
+
+    /* For debugging purposes
+    for (Web web : webs){
+        std::cout << "Web " << web.id << "\nVariable: " << web.varName << " Lines: ";
+        for (int value : web.lines) std::cout << value << " ";
+        std::cout << std::endl;
+    }*/
+   
+    return 1;   
 }

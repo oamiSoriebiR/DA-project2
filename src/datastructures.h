@@ -1,3 +1,6 @@
+#ifndef DATASTRUCTURES_H
+#define DATASTRUCTURES_H
+
 #include <string>
 #include <vector>
 #include <set>
@@ -5,7 +8,7 @@
 struct AssignmentConfig {
     int k = 0;                  // Número de registos
     std::string algorithm = ""; // "basic", "spilling" , "splitting" ou "free"
-}
+};
 
 struct LiveRange {
     std::string varName;
@@ -18,3 +21,5 @@ struct Web {
     std::set<int> lines;
     int assignedRegister = -1; // -1 = Memória/Spill
 };
+
+#endif //DATASTRUCTURES_H

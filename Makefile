@@ -1,19 +1,25 @@
 .PHONY: all build run clean
 
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Iinclude
+TARGET = allocator
+SRCS = src/main.cpp src/parser.cpp src/web.cpp src/algorithms.cpp
+
 all: build
 
 build:
 	@echo "Building project..."
-	g++ -std=c++17 -o allocator src/main.cpp
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
 
 run: build
 	@echo "Running project..."
-	./allocator
+	./$(TARGET)
 
 clean:
 	@echo "Cleaning up..."
-	# Add your clean commands here
-	rm -rf build/ *.o
+	rm -f $(TARGET)
+	rm -f *.o
+	rm -f src/*.o
 
 help:
 	@echo "Available targets:"

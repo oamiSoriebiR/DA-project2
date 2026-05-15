@@ -8,4 +8,4 @@
 std::vector<LiveRange> parseRanges(const std::string& input);
 AssignmentConfig parseRegisters(const std::string& input);
 
-#endif
+#endif //PARSER_H
