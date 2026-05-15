@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "datastructures.h"
 #include <regex>
 #include <string>
 #include <fstream>
@@ -22,8 +23,8 @@ static std::vector<int> extractInts(const std::string& line) {
     return values;
 }
 
-Graph<int> parseRanges(const std::string& input) {
-    Graph<int> ranges;
+std::vector<LiveRange> parseRanges(const std::string& input) {
+    std::vector<LiveRange> ranges;
 
     std::fstream file(input);
     if (!file.is_open()) {
@@ -36,34 +37,39 @@ Graph<int> parseRanges(const std::string& input) {
         line = trim(line);
         if (line.empty() || line[0] == '#') continue;
 
-        auto nums = extractInts(line);
+         // Formato esperado: "varName: 1+, 2, 3-"
+        size_t colonPos = line.find(':');
+        if (colonPos == std::string::npos) continue;
+
+        LiveRange lr;
+        // 1. Extrair o nome da variável (antes dos dois pontos)
+        lr.varName = trim(line.substr(0, colonPos));
+
+        // 2. Extrair os números (depois dos dois pontos)
+        std::string rightSide = line.substr(colonPos + 1);
+        std::vector<int> nums = extractInts(rightSide);
+
         if (nums.empty()) continue;
 
-        if (nums.size() >= 2) {
-            int start = std::min(nums[0], nums[1]);
-            int end = std::max(nums[0], nums[1]);
-
-            for (int v = start; v <= end; ++v) {
-                ranges.addVertex(v);
-                if (v < end) ranges.addEdge(v, v + 1, 1.0);
-            }
-        } else {
-            ranges.addVertex(nums[0]);
+        // 3. Inserir números na LiveRange
+        for (int n : nums) {
+            lr.lines.insert(n);
         }
+
+        ranges.push_back(lr);
     }
 
     file.close();
     return ranges;
 }
 
-std::pair<Graph<int>, std::string> parseRegisters(const std::string& input) {
-    Graph<int> registers;
-    std::string algorithm;
+AssignmentConfig parseRegisters(const std::string& input) {
+    AssignmentConfig config;
 
     std::fstream file(input);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << input << std::endl;
-        return {registers, algorithm};
+        return config;
     }
 
     std::string line;
@@ -71,28 +77,20 @@ std::pair<Graph<int>, std::string> parseRegisters(const std::string& input) {
         line = trim(line);
         if (line.empty() || line[0] == '#') continue;
 
-        // Extract algorithm from line starting with "algorithm:"
-        if (line.find("algorithm:") == 0) {
-            algorithm = trim(line.substr(10)); // Remove "algorithm:" and trim
+        if (line.find("registers:") == 0) {
+            std::string contentAfter = trim(line.substr(10));
+            auto nums = extractInts(contentAfter);
+            config.k = nums[0];
             continue;
         }
 
-        // Skip lines that are not register data (like "registers: 1")
-        if (line.find("registers:") == 0) continue;
-
-        auto nums = extractInts(line);
-        if (nums.empty()) continue;
-
-        for (int v : nums) {
-            registers.addVertex(v);
-        }
-
-        // Connect values in the order they appear on the line.
-        for (size_t i = 1; i < nums.size(); ++i) {
-            registers.addEdge(nums[i - 1], nums[i], 1.0);
+        // Extract algorithm from line starting with "algorithm:"
+        if (line.find("algorithm:") == 0) {
+            config.algorithm = trim(line.substr(10)); // Remove "algorithm:" and trim
+            continue;
         }
     }
 
     file.close();
-    return {registers, algorithm};
+    return config;
 }
