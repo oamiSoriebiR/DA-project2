@@ -1,8 +1,16 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "parser.cpp"
+#include "datastructures.h"
+#include "parser.h"
 
+void runMenu();
+bool fileExists(const std::string& filename);
+int runAllocation(const std::string& rangeFile, const std::string& registersFile, const std::string& allocationFile);
+
+std::string range;
+std::string registers;
+std::string allocation;
 
 int main(int argc, char* argv[]) {
     
@@ -12,9 +20,9 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     // Batch mode "myProg -b ranges.txt registers.txt allocation.txt"
-    std::string range= argv[2];
-    std::string registers= argv[3];
-    std::string allocation= argv[4];
+    range = argv[2];
+    registers = argv[3];
+    allocation = argv[4];
 
     if (!fileExists(range) || !fileExists(registers)) {
         std::cout << "One or more input files do not exist. Please provide valid files." << std::endl;
@@ -96,8 +104,11 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
     std::cout << "Registers file: " << registersFile << std::endl;
     std::cout << "Allocation output file: " << allocationFile << std::endl;
     
-    Graph<int> ranges = parseRanges(rangeFile);
-    auto [registers, algorithm] = parseRegisters(registersFile);
+
+    std::vector<LiveRange> ranges;
+    parseRanges(rangeFile, &ranges);
+    AssignmentConfig config;
+    parseRegisters(registersFile, &config);
     
-    std::cout << "Algorithm: " << algorithm << std::endl;
+    std::cout << "Algorithm: " << config.algorithm << std::endl;
 }
