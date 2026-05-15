@@ -269,7 +269,7 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 	if (v1 == NULL || v2 == NULL)
 		return false;
 
-	return v1->removeEdgeTo(v2); //&& v2->removeEdgeFrom(v1);
+	return v1->removeEdgeTo(v2) && v2->removeEdgeFrom(v1);
 }
 
 /*
