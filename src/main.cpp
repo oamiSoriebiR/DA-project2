@@ -12,6 +12,10 @@ std::string range;
 std::string registers;
 std::string allocation;
 
+std::vector<LiveRange> ranges;
+AssignmentConfig config;
+
+
 int main(int argc, char* argv[]) {
     
     // CLI mode
@@ -105,10 +109,8 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
     std::cout << "Allocation output file: " << allocationFile << std::endl;
     
 
-    std::vector<LiveRange> ranges;
-    parseRanges(rangeFile, &ranges);
-    AssignmentConfig config;
-    parseRegisters(registersFile, &config);
+    ranges = parseRanges(rangeFile);
+    config = parseRegisters(registersFile);
     
     std::cout << "Algorithm: " << config.algorithm << std::endl;
 }

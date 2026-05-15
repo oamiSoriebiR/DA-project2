@@ -23,11 +23,12 @@ static std::vector<int> extractInts(const std::string& line) {
     return values;
 }
 
-void parseRanges(const std::string& input, std::vector<LiveRange> *ranges) {
+std::vector<LiveRange> parseRanges(const std::string& input) {
+    std::vector<LiveRange> ranges;
     std::fstream file(input);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << input << std::endl;
-        return;
+        return ranges;
     }
 
     std::string line;
@@ -54,18 +55,19 @@ void parseRanges(const std::string& input, std::vector<LiveRange> *ranges) {
             lr.lines.insert(n);
         }
 
-        ranges->push_back(lr);
+        ranges.push_back(lr);
     }
 
     file.close();
-    return;
+    return ranges;
 }
 
-void parseRegisters(const std::string& input, AssignmentConfig *config) {
+AssignmentConfig parseRegisters(const std::string& input) {
+    AssignmentConfig config;
     std::fstream file(input);
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << input << std::endl;
-        return;
+        return config;
     }
 
     std::string line;
@@ -76,17 +78,17 @@ void parseRegisters(const std::string& input, AssignmentConfig *config) {
         if (line.find("registers:") == 0) {
             std::string contentAfter = trim(line.substr(10));
             auto nums = extractInts(contentAfter);
-            config->k = nums[0];
+            config.k = nums[0];
             continue;
         }
 
         // Extract algorithm from line starting with "algorithm:"
         if (line.find("algorithm:") == 0) {
-            config->algorithm = trim(line.substr(10)); // Remove "algorithm:" and trim
+            config.algorithm = trim(line.substr(10)); // Remove "algorithm:" and trim
             continue;
         }
     }
 
     file.close();
-    return;
+    return config;
 }

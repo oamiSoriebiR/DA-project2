@@ -5,7 +5,7 @@
 #include <vector>
 #include "datastructures.h"
 
-void parseRanges(const std::string& input, std::vector<LiveRange> *ranges);
-void parseRegisters(const std::string& input, AssignmentConfig *config);
+std::vector<LiveRange> parseRanges(const std::string& input);
+AssignmentConfig parseRegisters(const std::string& input);
 
 #endif
