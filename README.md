@@ -6,11 +6,11 @@
 
 **Course:** Analysis and Synthesis of Algorithms - Design of Algorithms (DA) L.EIC016  
 **Academic Year:** Spring 2026  
-**Team:** Group 4 - Class ''???''  
+**Team:** Group 4 - Class 5  
 **Members:**
 
 - Beatriz Remondes - `[ID]`
-- Nuno Coimbra - `[ID]`
+- Nuno Coimbra - 202405191
 - simão Ribeiro - 202306111
 
 ---

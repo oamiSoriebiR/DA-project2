@@ -19,7 +19,7 @@ struct Web {
     int id;
     std::string varName;
     std::set<int> lines;
-    int assignedRegister = -1; // -1 = Memória/Spill
+    int assignedRegister = 0; // -1 = Memória/Spill; 0 = Unassigned
 };
 
 #endif //DATASTRUCTURES_H

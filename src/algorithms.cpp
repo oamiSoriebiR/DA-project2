@@ -1,17 +1,133 @@
-#include <iostream>
 #include <vector>
+#include <stack>
+#include <set>
+#include "Graph.h"
+#include "datastructures.h"
+#include "interference.h"
+
+// Reset web register assignment
+void resetRegisterAssignment(std::vector<Web>& webs){
+    for (auto& w : webs) {
+        w.assignedRegister = 0;
+    }
+}
+
+// Function for basic algorithm
+bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
+    // TODO: Implement basic coloring algorithm
+    return false;
+}
+
+
+// Auxiliary function to determine next web to be spilled
+int selectSpillVictim(Graph<int>& graph) {
+    auto vertices = graph.getVertexSet();
+    int victimId = -1;
+    int maxDegree = -1;
+
+    for (auto v : vertices) {
+        int id = v->getInfo();
+        int degree = v->getAdj().size();
+        if (degree > maxDegree || (degree == maxDegree && id > victimId)) {
+            maxDegree = degree;
+            victimId = v->getInfo();
+        }
+    }
+    return victimId;
+}
 
 // Function for spilling algorithm
-void spilling() {
-    // TODO: Implement spilling algorithm
+bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
+    if (!runBasicAlgorithm(graph, webs, k)){
+        resetRegisterAssignment(webs);
+
+        std::set<int> spilledWebIds;
+
+        // Test until there is no web on graph
+        while (graph.getNumVertex() > 0) {
+            bool found = false;
+            auto vertices = graph.getVertexSet();
+
+            // Find web with degree < k
+            for (auto v : vertices) {
+                if ((int)v->getAdj().size() < k) {
+                    int id = v->getInfo();
+                    graph.removeVertex(id);
+                    found = true;
+                    break; 
+                }
+            }
+            
+            // If block, spill highest degree web
+            if (!found && graph.getNumVertex() > 0) {
+                int victimId = selectSpillVictim(graph);
+                if (victimId != -1) {
+                    spilledWebIds.insert(victimId);
+                    
+                    for (auto& w : webs) {
+                        if (w.id == victimId) {
+                            w.assignedRegister = -1;
+                            break;
+                        }
+                    }
+                graph.removeVertex(victimId);
+                }
+            }
+        }
+
+        // Recolor webs that didn't get spilled
+        for (auto& currentWeb : webs) {
+            if (currentWeb.assignedRegister == -1) {
+                continue; 
+            }
+
+            // Find colors currently in use by neighboring webs
+            std::set<int> neighborColors;
+            for (auto& otherWeb : webs) {
+                if (otherWeb.id != currentWeb.id && checkInterference(currentWeb, otherWeb)) {
+                    if (otherWeb.assignedRegister > 0) {
+                        neighborColors.insert(otherWeb.assignedRegister);
+                    }
+                }
+            }
+
+            // Assign first unused color
+            bool colored = false;
+            for (int c = 1; c <= k; ++c) {
+                if (neighborColors.find(c) == neighborColors.end()) {
+                    currentWeb.assignedRegister = c;
+                    colored = true;
+                    break;
+                }
+            }
+
+            // If still uncolored, spill
+            if (!colored) {
+                currentWeb.assignedRegister = -1;
+                spilledWebIds.insert(currentWeb.id);
+            }
+        }
+
+        return true;
+    } else return true;
 }
 
 // Function for splitting algorithm
-void splitting() {
-    // TODO: Implement splitting algorithm
+bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
+    if (!runBasicAlgorithm(graph, webs, k)){
+        resetRegisterAssignment(webs);
+        // TODO: Implement splitting algorithm
+        return false;
+    }
+    return true;
 }
 
 // Function for custom algorithm (to be designed)
-void free() {
-    // TODO: Design and implement custom algorithm
+bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
+    if (!runBasicAlgorithm(graph, webs, k)){
+        resetRegisterAssignment(webs);
+        // TODO: Implement free algorithm
+        return false;
+    }
+    return true;
 }

@@ -7,6 +7,7 @@
 #include "web.h"
 #include "interference.h"
 #include "io.h"
+#include "algorithms.h"
 
 void runMenu();
 bool fileExists(const std::string& filename);
@@ -140,12 +141,19 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
         }
         std::cout << std::endl;
     }*/
-bool allocationSucceeded = false; 
+
+bool allocationSucceeded = false;
 
 if (config.algorithm == "basic") {
-    // TODO: allocationSucceeded = runBasicColoringFunctionHere();
+    allocationSucceeded = runBasicAlgorithm(interference, webs, config.k);
+}else if (config.algorithm == "spilling") {
+    allocationSucceeded = runSpillingAlgorithm(interference, webs, config.k);
+}else if (config.algorithm == "splitting") {
+    allocationSucceeded = runSplittingAlgorithm(interference, webs, config.k);
+}else if (config.algorithm == "free") {
+    allocationSucceeded = runFreeAlgorithm(interference, webs, config.k);
 }
 
 // 2. Call output module function to generate the file
-writeAllocationOutput(allocationFile, webs, config, allocationSucceeded);
+return writeAllocationOutput(allocationFile, webs, config, allocationSucceeded);
 }

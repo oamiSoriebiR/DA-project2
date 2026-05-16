@@ -21,10 +21,10 @@ bool writeAllocationOutput(const std::string& outputPath, const std::vector<Web>
         size_t count = 0;
         for (int line : w.lines) {
             file << line;
-            
-            // Note: If  parser strips the '+' and '-',  add them back:
-            // if (count == 0) file << "+"; // Usually definition
-            // if (count == w.lines.size() - 1) file << "-"; // Last use
+
+            // Reassing '+' & '-' symbols
+            if (count == 0) file << "+"; 
+            if (count == w.lines.size() - 1) file << "-";
             
             if (++count < w.lines.size()) {
                 file << ",";
@@ -40,7 +40,7 @@ bool writeAllocationOutput(const std::string& outputPath, const std::vector<Web>
         // Print the register mapping
         for (const auto& w : webs) {
             if (w.assignedRegister != -1) {
-                file << "r" << w.assignedRegister << ": web" << w.id << "\n";
+                file << "r" << w.assignedRegister - 1 << ": web" << w.id << "\n";
             } else {
                 file << "M: web" << w.id << "\n";
             }
