@@ -19,7 +19,7 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
 }
 
 
-// Auxiliary function to determine next web to be spilled
+// Auxiliary function to determine next web to be affected
 int selectVictim(Graph<int>& graph) {
     auto vertices = graph.getVertexSet();
     int victimId = -1;
