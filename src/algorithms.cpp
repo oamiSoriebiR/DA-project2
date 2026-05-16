@@ -20,7 +20,7 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
 
 
 // Auxiliary function to determine next web to be spilled
-int selectSpillVictim(Graph<int>& graph) {
+int selectVictim(Graph<int>& graph) {
     auto vertices = graph.getVertexSet();
     int victimId = -1;
     int maxDegree = -1;
@@ -60,7 +60,7 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
             
             // If block, spill highest degree web
             if (!found && graph.getNumVertex() > 0) {
-                int victimId = selectSpillVictim(graph);
+                int victimId = selectVictim(graph);
                 if (victimId != -1) {
                     spilledWebIds.insert(victimId);
                     
@@ -112,12 +112,67 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     } else return true;
 }
 
+// Auxiliary function to divide a web in half
+bool splitWeb(std::vector<Web>& webs, int victimId) {
+    size_t victimIndex = 0;
+    bool found = false;
+    
+    for (size_t i = 0; i < webs.size(); ++i) {
+        if (webs[i].id == victimId) {
+            victimIndex = i;
+            found = true;
+            break;
+        }
+    }
+
+    // If web cannot be split, problem is not solvable with K registers
+    if (!found || webs[victimIndex].lines.size() <= 1) {
+        return false;
+    }
+
+    // Save all data individually instead of using pointers to avoid dangling pointers
+    std::string varName = webs[victimIndex].varName;
+    std::vector<int> sortedLines(webs[victimIndex].lines.begin(), webs[victimIndex].lines.end());
+    size_t mid = sortedLines.size() / 2;
+
+    // Create new web
+    Web newWeb;
+    newWeb.id = webs.size();
+    newWeb.varName = varName;
+    newWeb.assignedRegister = 0;
+    for (size_t i = mid; i < sortedLines.size(); ++i) {
+        newWeb.lines.insert(sortedLines[i]);
+    }
+
+    // Refresh original web
+    webs[victimIndex].lines.clear();
+    for (size_t i = 0; i < mid; ++i) {
+        webs[victimIndex].lines.insert(sortedLines[i]);
+    }
+
+    webs.push_back(newWeb);
+    return true;
+}
+
 // Function for splitting algorithm
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     if (!runBasicAlgorithm(graph, webs, k)){
-        resetRegisterAssignment(webs);
-        // TODO: Implement splitting algorithm
-        return false;
+        while (true) {
+            resetRegisterAssignment(webs);
+
+            Graph<int> newGraph = buildInterferenceGraph(webs);
+
+            // Try to run algorithm again
+            if (runBasicAlgorithm(newGraph, webs, k)) {
+                return true;
+            }
+
+            // If failed, find victim to split
+            int victimId = selectVictim(newGraph);
+
+            // If unable to split web, problem is not possible with K registers
+            if (!splitWeb(webs, victimId)) return false;
+        }
     }
     return true;
 }

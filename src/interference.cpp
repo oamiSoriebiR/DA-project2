@@ -45,7 +45,5 @@ Graph<int> buildInterferenceGraph(const std::vector<Web>& webs) {
             }
         }
     }
-
-    std::cout << "Interference Graph built. Vertices: " << ig.getNumVertex() << std::endl;
     return ig;
 }
