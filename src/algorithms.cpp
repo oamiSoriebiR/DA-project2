@@ -1,6 +1,7 @@
 #include <vector>
 #include <stack>
 #include <set>
+#include <map>
 #include "Graph.h"
 #include "datastructures.h"
 #include "interference.h"
@@ -14,10 +15,104 @@ void resetRegisterAssignment(std::vector<Web>& webs){
 
 // Function for basic algorithm
 bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
-    // TODO: Implement basic coloring algorithm
-    return false;
-}
+    resetRegisterAssignment(webs);
+    
+    std::stack<int> S;
+    std::map<int, int> degrees;
+    std::set<int> activeNodes;
+    std::map<int, int> assignedColors; // webId -> cor atribuída (1 a k)
 
+    for (auto v : graph.getVertexSet()) {
+        int id = v->getInfo();
+        activeNodes.insert(id);
+        degrees[id] = v->getAdj().size();
+        assignedColors[id] = 0; // 0 significa não-atribuído
+    }
+
+    bool spillOccurred = false;
+
+    // Phase 1: Simplificação (Simplify)
+    while (!activeNodes.empty()) {
+        int nodeToRemove = -1;
+
+        for (int id : activeNodes) {
+            if (degrees[id] < k) {
+                nodeToRemove = id;
+                break;
+            }
+        }
+
+        if (nodeToRemove == -1) {
+            spillOccurred = true;
+
+            int maxDegree = -1;
+            int victimId = -1;
+            for (int id : activeNodes) {
+                if (degrees[id] > maxDegree || (degrees[id] == maxDegree && id > victimId)) {
+                    maxDegree = degrees[id];
+                    victimId = id;
+                }
+            }
+            nodeToRemove = victimId;
+        } else {
+            S.push(nodeToRemove);
+        }
+
+        activeNodes.erase(nodeToRemove);
+        auto v = graph.findVertex(nodeToRemove);
+        if (v != nullptr) {
+            for (const auto& edge : v->getAdj()) {
+                int neighborId = edge.getDest()->getInfo();
+                if (activeNodes.count(neighborId) > 0) {
+                    degrees[neighborId]--;
+                }
+            }
+        }
+    }
+
+    // Phase 2: Seleção/Coloração (Select)
+    while (!S.empty()) {
+        int id = S.top();
+        S.pop();
+
+        std::vector<bool> availableColors(k + 1, true);
+
+        auto v = graph.findVertex(id);
+        if (v != nullptr) {
+            for (const auto& edge : v->getAdj()) {
+                int neighborId = edge.getDest()->getInfo();
+                int neighborColor = assignedColors[neighborId];
+                if (neighborColor >= 1 && neighborColor <= k) {
+                    availableColors[neighborColor] = false;
+                }
+            }
+        }
+
+        int chosenColor = -1;
+        for (int c = 1; c <= k; ++c) {
+            if (availableColors[c]) {
+                chosenColor = c;
+                break;
+            }
+        }
+
+        if (chosenColor != -1) {
+            assignedColors[id] = chosenColor;
+        } else {
+            return false;
+        }
+    }
+
+    for (auto& w : webs) {
+        if (assignedColors[w.id] == 0) {
+            w.assignedRegister = -1; 
+        } else {
+            w.assignedRegister = assignedColors[w.id];
+        }
+    }
+
+    return !spillOccurred;
+}
 
 // Auxiliary function to determine next web to be affected
 int selectVictim(Graph<int>& graph) {
