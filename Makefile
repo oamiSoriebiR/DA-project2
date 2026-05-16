@@ -3,7 +3,7 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Iinclude
 TARGET = allocator
-SRCS = src/main.cpp src/parser.cpp src/web.cpp src/interference.cpp src/algorithms.cpp
+SRCS = src/main.cpp src/parser.cpp src/web.cpp src/interference.cpp src/algorithms.cpp src/io.cpp
 
 all: build
 

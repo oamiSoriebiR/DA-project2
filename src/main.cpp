@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "web.h"
 #include "interference.h"
+#include "io.h"
 
 void runMenu();
 bool fileExists(const std::string& filename);
@@ -139,6 +140,12 @@ int runAllocation(const std::string& rangeFile, const std::string& registersFile
         }
         std::cout << std::endl;
     }*/
-    
-    return 1;   
+bool allocationSucceeded = false; 
+
+if (config.algorithm == "basic") {
+    // TODO: allocationSucceeded = runBasicColoringFunctionHere();
+}
+
+// 2. Call output module function to generate the file
+writeAllocationOutput(allocationFile, webs, config, allocationSucceeded);
 }
