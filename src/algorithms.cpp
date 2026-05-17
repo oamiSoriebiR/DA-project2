@@ -20,13 +20,13 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
     std::stack<int> S;
     std::map<int, int> degrees;
     std::set<int> activeNodes;
-    std::map<int, int> assignedColors; // webId -> cor atribuída (1 a k)
+    std::map<int, int> assignedColors; // webId -> assigned color (1 to k)
 
     for (auto v : graph.getVertexSet()) {
         int id = v->getInfo();
         activeNodes.insert(id);
         degrees[id] = v->getAdj().size();
-        assignedColors[id] = 0; // 0 significa não-atribuído
+        assignedColors[id] = 0; // 0 means unassigned
     }
 
     bool spillOccurred = false;
@@ -115,17 +115,33 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
 }
 
 // Auxiliary function to determine next web to be affected
-int selectVictim(Graph<int>& graph) {
+int selectSpillVictim(Graph<int>& graph, const std::vector<Web>& webs) {
     auto vertices = graph.getVertexSet();
     int victimId = -1;
-    int maxDegree = -1;
+    double maxMetric = -1.0;
 
     for (auto v : vertices) {
         int id = v->getInfo();
         int degree = v->getAdj().size();
-        if (degree > maxDegree || (degree == maxDegree && id > victimId)) {
-            maxDegree = degree;
-            victimId = v->getInfo();
+        
+        // Find the corresponding web to get its live range length
+        size_t webSize = 1; // Default fallback to avoid division by zero
+        for (const auto& w : webs) {
+            if (w.id == id) {
+                if (!w.lines.empty()) {
+                    webSize = w.lines.size();
+                }
+                break;
+            }
+        }
+
+        // Calculate the Spill Metric
+        double metric = static_cast<double>(degree) / webSize;
+
+        // Select the vertex with the maximum metric
+        if (metric > maxMetric || (metric == maxMetric && id > victimId)) {
+            maxMetric = metric;
+            victimId = id;
         }
     }
     return victimId;
@@ -138,7 +154,7 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
 
         std::set<int> spilledWebIds;
 
-        // Test until there is no web on graph
+        // Test until there is no web on the graph
         while (graph.getNumVertex() > 0) {
             bool found = false;
             auto vertices = graph.getVertexSet();
@@ -153,19 +169,19 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
                 }
             }
             
-            // If block, spill highest degree web
+            // If blocked, spill the web with the highest Spill Metric
             if (!found && graph.getNumVertex() > 0) {
-                int victimId = selectVictim(graph);
+                int victimId = selectSpillVictim(graph, webs);
                 if (victimId != -1) {
                     spilledWebIds.insert(victimId);
                     
                     for (auto& w : webs) {
                         if (w.id == victimId) {
-                            w.assignedRegister = -1;
+                            w.assignedRegister = -1; // Mark as spilled to memory
                             break;
                         }
                     }
-                graph.removeVertex(victimId);
+                    graph.removeVertex(victimId);
                 }
             }
         }
@@ -186,7 +202,7 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
                 }
             }
 
-            // Assign first unused color
+            // Assign the first unused color
             bool colored = false;
             for (int c = 1; c <= k; ++c) {
                 if (neighborColors.find(c) == neighborColors.end()) {
@@ -196,7 +212,7 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
                 }
             }
 
-            // If still uncolored, spill
+            // If still uncolored, spill it
             if (!colored) {
                 currentWeb.assignedRegister = -1;
                 spilledWebIds.insert(currentWeb.id);
@@ -207,7 +223,7 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     } else return true;
 }
 
-// Auxiliary function to divide a web in half
+// Auxiliary function to divide a web exactly where the interference bottleneck ends
 bool splitWeb(std::vector<Web>& webs, int victimId) {
     size_t victimIndex = 0;
     bool found = false;
@@ -220,64 +236,193 @@ bool splitWeb(std::vector<Web>& webs, int victimId) {
         }
     }
 
-    // If web cannot be split, problem is not solvable with K registers
     if (!found || webs[victimIndex].lines.size() <= 1) {
         return false;
     }
 
-    // Save all data individually instead of using pointers to avoid dangling pointers
-    std::string varName = webs[victimIndex].varName;
-    std::vector<int> sortedLines(webs[victimIndex].lines.begin(), webs[victimIndex].lines.end());
-    size_t mid = sortedLines.size() / 2;
+    const auto& victimWeb = webs[victimIndex];
+    
+    // Track which lines in this web actually have an interference conflict
+    std::set<int> conflictingLines;
+    for (int line : victimWeb.lines) {
+        for (const auto& otherWeb : webs) {
+            if (otherWeb.id != victimId && otherWeb.lines.count(line) > 0) {
+                conflictingLines.insert(line);
+                break; // Move to the next line once a conflict is found
+            }
+        }
+    }
 
-    // Create new web
+    std::set<int> preBottleneckLines;
+    std::set<int> postBottleneckLines;
+
+    // YOUR INSIGHT: If there are conflicting lines, find the point where they end!
+    if (!conflictingLines.empty()) {
+        // Get the absolute last line that has an active conflict
+        int lastConflictLine = *conflictingLines.rbegin();
+
+        for (int line : victimWeb.lines) {
+            if (line <= lastConflictLine) {
+                // Keep the entire conflict zone together
+                preBottleneckLines.insert(line);
+            } else {
+                // Everything after the conflict zone clears out into the safe zone
+                postBottleneckLines.insert(line);
+            }
+        }
+    }
+
+    // Edge Case Protection: If the conflict spans the entire web, 
+    // or if the slice results in an empty side, fall back cleanly to the midpoint.
+    if (preBottleneckLines.empty() || postBottleneckLines.empty()) {
+        std::vector<int> sortedLines(victimWeb.lines.begin(), victimWeb.lines.end());
+        size_t mid = sortedLines.size() / 2;
+        
+        preBottleneckLines.clear();
+        postBottleneckLines.clear();
+        
+        for (size_t i = 0; i < mid; ++i) preBottleneckLines.insert(sortedLines[i]);
+        for (size_t i = mid; i < sortedLines.size(); ++i) postBottleneckLines.insert(sortedLines[i]);
+    }
+
+    // Create the new derived safe-zone web fragment
     Web newWeb;
     newWeb.id = webs.size();
-    newWeb.varName = varName;
+    newWeb.varName = victimWeb.varName;
     newWeb.assignedRegister = 0;
-    for (size_t i = mid; i < sortedLines.size(); ++i) {
-        newWeb.lines.insert(sortedLines[i]);
-    }
+    newWeb.lines = postBottleneckLines;
 
-    // Refresh original web
-    webs[victimIndex].lines.clear();
-    for (size_t i = 0; i < mid; ++i) {
-        webs[victimIndex].lines.insert(sortedLines[i]);
-    }
+    // Retain only the conflict zone lines in the original web entry
+    webs[victimIndex].lines = preBottleneckLines;
 
     webs.push_back(newWeb);
     return true;
 }
 
-// Function for splitting algorithm
-bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
-    if (!runBasicAlgorithm(graph, webs, k)){
-        while (true) {
-            resetRegisterAssignment(webs);
-
-            Graph<int> newGraph = buildInterferenceGraph(webs);
-
-            // Try to run algorithm again
-            if (runBasicAlgorithm(newGraph, webs, k)) {
-                return true;
-            }
-
-            // If failed, find victim to split
-            int victimId = selectVictim(newGraph);
-
-            // If unable to split web, problem is not possible with K registers
-            if (!splitWeb(webs, victimId)) return false;
+int selectSplittingVictim(Graph<int>& graph) {
+    auto vertices = graph.getVertexSet();
+    int victimId = -1;
+    int maxDegree = -1;
+    for (auto v : vertices) {
+        int id = v->getInfo();
+        int degree = v->getAdj().size();
+        if (degree > maxDegree || (degree == maxDegree && id > victimId)) {
+            maxDegree = degree;
+            victimId = id;
         }
     }
+    return victimId;
+}
+
+// Function for splitting algorithm - UPDATED WITH ATOMIC FALLBACK
+bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
+    if (runBasicAlgorithm(graph, webs, k)){
+        return true;
+    }
+
+    int maxSplits = 30;
+    int splitsDone = 0;
+
+    while (splitsDone < maxSplits) {
+        resetRegisterAssignment(webs);
+        Graph<int> newGraph = buildInterferenceGraph(webs);
+
+        // Try to run basic algorithm on our newly adjusted webs
+        if (runBasicAlgorithm(newGraph, webs, k)) {
+            return true;
+        }
+
+        // If it failed, find victim to split
+        int victimId = selectSplittingVictim(newGraph);
+
+        // If splitWeb returns false, the victim cannot be divided anymore.
+        // Break out to save and color the remaining segments!
+        if (!splitWeb(webs, victimId)) {
+            break;
+        }
+        
+        splitsDone++;
+    }
+
+    // Final allocation attempt to preserve color mappings for valid slices
+    resetRegisterAssignment(webs);
+    Graph<int> finalGraph = buildInterferenceGraph(webs);
+    runBasicAlgorithm(finalGraph, webs, k);
+
     return true;
 }
 
 // Function for custom algorithm (to be designed)
+// src/algorithms.cpp
+
 bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
-    if (!runBasicAlgorithm(graph, webs, k)){
-        resetRegisterAssignment(webs);
-        // TODO: Implement free algorithm
-        return false;
+    if (runBasicAlgorithm(graph, webs, k)){
+        return true;
     }
+
+    int maxSplits = 20; 
+    int splitsDone = 0;
+    std::set<int> forceSpilledIds;
+
+    while (splitsDone < maxSplits) {
+        resetRegisterAssignment(webs);
+        Graph<int> newGraph = buildInterferenceGraph(webs);
+
+        for (int spillId : forceSpilledIds) {
+            newGraph.removeVertex(spillId);
+        }
+
+        if (runBasicAlgorithm(newGraph, webs, k)) {
+            for (auto& w : webs) {
+                if (forceSpilledIds.count(w.id) > 0) w.assignedRegister = -1;
+            }
+            return true;
+        }
+
+        int victimId = selectSplittingVictim(newGraph);
+
+        // 1. DYNAMIC EFFICIENCY CALCULATION
+        size_t currentWebSize = 0;
+        for (const auto& w : webs) {
+            if (w.id == victimId) {
+                currentWebSize = w.lines.size();
+                break;
+            }
+        }
+        
+        auto vertex = newGraph.findVertex(victimId);
+        size_t currentDegree = (vertex != nullptr) ? vertex->getAdj().size() : 1;
+
+        // 2. THE EFFICIENCY THRESHOLD:
+        // Instead of a hardcoded '2', we adapt to the graph pressure.
+        // If the web's average line span per interference edge is too small,
+        // splitting it will only cause fragment pollution. 
+        double splitEfficiency = static_cast<double>(currentWebSize) / currentDegree;
+        double dynamicCutoff = 1.5 / static_cast<double>(k); 
+
+        if (splitEfficiency < dynamicCutoff || currentWebSize <= 2) {
+            forceSpilledIds.insert(victimId);
+            continue;
+        }
+
+        if (splitWeb(webs, victimId)) {
+            splitsDone++;
+        } else {
+            forceSpilledIds.insert(victimId);
+        }
+    }
+
+    // Final Cleanup Pass
+    resetRegisterAssignment(webs);
+    Graph<int> finalGraph = buildInterferenceGraph(webs);
+    for (int spillId : forceSpilledIds) {
+        finalGraph.removeVertex(spillId);
+    }
+    runBasicAlgorithm(finalGraph, webs, k);
+
+    for (auto& w : webs) {
+        if (forceSpilledIds.count(w.id) > 0) w.assignedRegister = -1;
+    }
+
     return true;
 }

@@ -1,3 +1,4 @@
+// src/algorithms.h
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
@@ -6,14 +7,12 @@
 #include <vector>
 
 void resetRegisterAssignment(std::vector<Web>& webs);
-
 bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
-int selectSpillVictim(Graph<int>& graph);
+int selectSpillVictim(Graph<int>& graph, const std::vector<Web>& webs);
 bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
-
 bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
 #endif //ALGORITHMS_H
