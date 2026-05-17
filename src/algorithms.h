@@ -20,7 +20,7 @@ void resetRegisterAssignment(std::vector<Web>& webs);
  * @param webs Vector of Web structures to allocate registers for.
  * @param k The number of available registers (colors).
  * @return True if allocation succeeded without spilling, false otherwise.
- * @note Time Complexity: O(V^2 + V*k), where V is the number of vertices (webs) and k is the number of registers.
+ * @note Time Complexity: O(V^2 * logV + V*k), where V is the number of vertices (webs) and k is the number of registers.
  */
 bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
@@ -62,7 +62,7 @@ bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
  * @param webs Vector of Web structures.
  * @param k The number of available registers.
  * @return True if the process completed successfully.
- * @note Time Complexity: O(C * (W^2 * L + V^2)), where C is a constant max splits, W is the number of webs, L is the max lines per web, and V is the number of vertices.
+ * @note Time Complexity: O(C * (W^2 * L + V^2 * logV)), where C is a constant max splits, W is the number of webs, L is the max lines per web, and V is the number of vertices.
  */
 bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 

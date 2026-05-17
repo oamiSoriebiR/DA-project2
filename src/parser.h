@@ -19,7 +19,7 @@ std::vector<LiveRange> parseRanges(const std::string& input);
  * Reads the available number of registers (k) and the chosen algorithm.
  * @param input The path to the input file containing configuration data.
  * @return An AssignmentConfig structure containing the parsed settings.
- * @note Time Complexity: O(N), where N is the total number of characters in the file.
+ * @note Time Complexity: O(N * logL), where N is the total number of characters in the file & L is the maximum nunber of lines in a range.
  */
 AssignmentConfig parseRegisters(const std::string& input);
 
