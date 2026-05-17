@@ -1,0 +1,131 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title[Register Allocation]{DA2026\_PRJ2: Compiler Register Allocation}
+\subtitle{Graph-Coloring Heuristics}
+\author[Group 4 - Class 5]{Beatriz Remondes \and Nuno Coimbra \and Simão Ribeiro}
+\institute[FEUP]{Faculty of Engineering, University of Porto}
+\date{Spring 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+    \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{Project Overview}
+    \begin{itemize}
+        \item \textbf{Goal:} Implement a compiler back-end tool for global register allocation.
+        \item \textbf{Approach:} Graph-coloring heuristics.
+        \item \textbf{Pipeline:}
+        \begin{enumerate}
+            \item Parse live ranges from 3-address intermediate representation.
+            \item Build \textbf{live webs} (merging overlapping ranges).
+            \item Construct an \textbf{interference graph}.
+            \item Assign webs to $N$ available registers.
+        \end{enumerate}
+        \item \textbf{Fallback Strategies:} Spilling, Splitting, and a Hybrid "Free" strategy when allocation fails.
+    \end{itemize}
+\end{frame}
+
+\section{The Graph Class}
+\begin{frame}{The Graph Class: Conceptual Decisions}
+    \begin{itemize}
+        \item \textbf{Base Structure:} Utilized the generic \texttt{Graph<T>} and \texttt{Vertex<T>} templates provided in practical classes.
+        \item \textbf{Alterations \& Additions:}
+        \begin{itemize}
+            \item \textbf{Undirected Semantics:} Interference graphs are inherently undirected. Edge additions ensure symmetry ($A \rightarrow B$ and $B \rightarrow A$).
+            \item \textbf{DOT File Emission:} Added \texttt{emitDOTFile()} to export the graph to Graphviz format for visual debugging and presentation.
+            \item \textbf{Degree Tracking:} Integrated degree management (\texttt{getIndegree()}) crucial for the \textit{Smallest-Degree-First} heuristic and the Simplify phase.
+            \item \textbf{Mutable Priority Queue:} Integrated \texttt{MutablePriorityQueue} to efficiently extract minimum degree nodes during the simplification stack building.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Implemented Heuristics}
+\begin{frame}{Spilling Heuristic (T2.2)}
+    \begin{itemize}
+        \item \textbf{Objective:} Move uncolorable webs to memory to reduce graph chromatic number.
+        \item \textbf{Spill Metric:} $\frac{\text{Degree(Node)}}{\text{Live\_Range\_length(Node)}}$
+        \item \textbf{Rationale:} 
+        \begin{itemize}
+            \item High degree: removes maximum interference.
+            \item Short live range: minimizes memory load/store overhead.
+        \end{itemize}
+        \item Iterates from $1$ to $K$ spilled webs, stopping when the graph becomes $N$-colorable.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Splitting Heuristic (T2.3)}
+    \begin{itemize}
+        \item \textbf{Objective:} Divide a web into two smaller webs to reduce localized interference.
+        \item \textbf{Maximum Interference Bottleneck:}
+        \begin{itemize}
+            \item Analyzes internal execution points of the uncolorable web.
+            \item Finds the specific program line with the highest simultaneous interference.
+        \end{itemize}
+        \item \textbf{Rationale:} Splitting at this exact point severs the most edges in the interference graph in a single operation.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{"Free" Algorithm Strategy (T2.4)}
+    \begin{itemize}
+        \item \textbf{Priority-Based Hybrid Approach.}
+        \item Replaces standard stack with a \textit{Smallest-Degree-First} priority queue.
+        \item \textbf{Dynamic Impasse Resolution:}
+        \begin{itemize}
+            \item \textbf{High Density (Near-Clique):} Triggers Spilling.
+            \item \textbf{Localized Clusters:} Triggers Splitting.
+        \end{itemize}
+        \item Prevents aggressive splitting of highly connected graphs and unnecessary spilling of easily splittable webs.
+    \end{itemize}
+\end{frame}
+
+\section{Challenging Aspects}
+\begin{frame}{Challenging Aspects of Implementation}
+    \begin{itemize}
+        \item \textbf{Web Construction \& Merging:} 
+        \begin{itemize}
+            \item Handling continuous vs. discontinuous live ranges accurately.
+            \item Merging variables with overlapping scopes efficiently $O(R^2 \cdot L)$.
+        \end{itemize}
+        \item \textbf{Splitting Logic:} 
+        \begin{itemize}
+            \item Ensuring semantic correctness when dividing a web (part 1 \& part 2).
+            \item Updating the interference graph dynamically without a full rebuild.
+        \end{itemize}
+        \item \textbf{Hybrid Strategy Tuning:} 
+        \begin{itemize}
+            \item Balancing the heuristics to correctly identify when to Spill vs. Split.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Demo}
+\begin{frame}{Live Demonstration}
+    \begin{center}
+        \Large \textbf{Time for a Live Demo!}
+    \end{center}
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{Interactive Mode:} We will run our allocator using the step-by-step interactive menu.
+        \item \textbf{Test Cases:} Resolving a sample dataset of live ranges and available registers.
+    \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \item Successfully implemented a robust register allocator using graph coloring.
+        \item Extended the base \texttt{Graph} class for advanced heuristic support.
+        \item The "Free" strategy optimally balances spills and splits.
+    \end{itemize}
+\end{frame}
+
+\end{document}

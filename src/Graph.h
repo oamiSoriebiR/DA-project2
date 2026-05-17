@@ -88,7 +88,6 @@ public:
 	vector<T> dfs() const;
 	vector<T> dfs(const T & source) const;
 	vector<T> bfs(const T & source) const;
-    void emitDOTFile(string gname);
 
 };
 
@@ -322,32 +321,6 @@ bool Graph<T>::removeVertex(const T &in) {
 			return true;
 		}
 	return false;
-}
-
-template <class T>
-inline void  Graph<T>::emitDOTFile(string gname) {
-    ofstream g_dot_file;
-
-    g_dot_file.open (gname+".gv");
-    g_dot_file << "graph { \n";
-
-
-    g_dot_file << "labelloc  = top;\n";
-    g_dot_file << "labeljust = left;\n";
-    g_dot_file << "fontname  = calibri;\n";
-    g_dot_file << "fontsize  = 16;\n";
-    g_dot_file << "\n";
-
-    for (auto v : vertexSet) {
-        g_dot_file << "  " << v->getInfo() << ";\n";  // Print isolated node
-        for (auto & e : v->getAdj()) {
-            auto w = e.getDest();
-            g_dot_file << "  " << v->getInfo() << " -- " << w->getInfo() << ";\n";
-        }
-    }
-
-    g_dot_file << "}\n";
-    g_dot_file.close();
 }
 
 #endif /* GRAPH_H_ */

@@ -1,4 +1,4 @@
-.PHONY: all build run clean
+.PHONY: all build run clean presentation
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Iinclude
@@ -20,11 +20,17 @@ clean:
 	rm -f $(TARGET)
 	rm -f *.o
 	rm -f src/*.o
+	rm -f presentation/*.aux presentation/*.log presentation/*.nav presentation/*.out presentation/*.snm presentation/*.toc presentation/*.pdf
+
+presentation:
+	@echo "Building presentation..."
+	cd presentation && pdflatex presentation.tex
 
 help:
 	@echo "Available targets:"
-	@echo "  all     - Build the project"
-	@echo "  build   - Compile the project"
-	@echo "  run     - Run the project"
-	@echo "  clean   - Remove build artifacts"
-	@echo "  help    - Show this help message"
+	@echo "  all          - Build the project"
+	@echo "  build        - Compile the project"
+	@echo "  run          - Run the project"
+	@echo "  presentation - Build the LaTeX presentation"
+	@echo "  clean        - Remove build artifacts"
+	@echo "  help         - Show this help message"

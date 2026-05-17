@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@sectionintoc {2}{The Graph Class}{4}{0}{2}
+\beamer@sectionintoc {3}{Implemented Heuristics}{5}{0}{3}
+\beamer@sectionintoc {4}{Challenging Aspects}{8}{0}{4}
+\beamer@sectionintoc {5}{Demo}{9}{0}{5}
+\beamer@sectionintoc {6}{Conclusion}{10}{0}{6}
