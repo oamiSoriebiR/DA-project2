@@ -5,7 +5,7 @@
 **Team:** Group 4 - Class 5  
 **Members:**
 
-- Beatriz Remondes - `[ID]`
+- Beatriz Remondes - 202204353
 - Nuno Coimbra - 202405191
 - Simão Ribeiro - 202306111
 
@@ -48,17 +48,18 @@ When allocation is not possible, the project supports **spilling**, **splitting*
 
 ### Build
 
-````bash
+```bash
 make
-`````
+```
 
 ### Execution Modes
 
-#### 1. Batch Mode (Used for grading)
+#### Batch Mode
 
 Executes the allocation directly via command-line arguments. Errors/warnings are printed to `stderr`.
 
 ```bash
+./allocator -b <ranges.txt> <registers.txt> <output_allocation.txt>
 ./allocator -b <ranges.txt> <registers.txt> <output_allocation.txt>
 ```
 
@@ -68,7 +69,7 @@ Executes the allocation directly via command-line arguments. Errors/warnings are
 ./allocator -b test_cases/case1_ranges.txt test_cases/case1_regs.txt output.txt
 ```
 
-#### 2. Interactive Mode
+#### Interactive Mode
 
 Launches a user-friendly terminal menu to load files, select algorithms, and view results step-by-step.
 
@@ -83,15 +84,28 @@ Launches a user-friendly terminal menu to load files, select algorithms, and vie
 ### Input Files
 
 1. **Ranges File (`ranges.txt`):** Defines variables and their execution live ranges. `+` indicates a definition (write), `-` indicates the last use (read).
-2. **Registers File (`registers.txt`):** Defines the maximum number of registers $N$ and the algorithm variant to use.
+2. **Registers File (`registers.txt`):** Defines the maximum number of registers $N$ and the algorithm variant to use.<br>
+Algorithm parameter must be manually changed to test other algorithms.
     - `algorithm: basic`
     - `algorithm: spilling, K` (where $K$ is max webs to spill)
     - `algorithm: splitting, K` (where $K$ is max webs to split)
     - `algorithm: free`
 
-### Output File (`allocation.txt`)
+### Output File
 
-Generates a human-readable map of constructed webs and their assigned registers (`r0`, `r1`...) or memory (`M` if spilled/unable to allocate).
+Generates a human-readable map of constructed webs and their assigned registers (`r0`, `r1`...) or memory (`M` if spilled/unable to allocate).<br>
+
+Example:<br>
+```text
+webs: 3
+web0: 1+,2,3-
+web1: 2+,3,4,5-
+web2: 4+,5,6,7-
+registers: 2
+r0: web0
+r1: web1
+r0: web2
+```
 
 ---
 
@@ -122,18 +136,20 @@ This dynamic choice prevents the pitfalls of aggressively splitting highly conne
 ## Project Repository Structure
 
 ```text
-.
+├── data/                   # Input files
+│   ├── output/             # Output files, 1 for each range file
+│   ├── range/              # Variable ranges file
+│   └── registers/          # Register & algorithm file
 ├── src/                    # Source code files
 │   ├── main.cpp            # Entry point, CLI & Batch parser
 │   ├── parser.h/cpp        # Live range & input file parsing
 │   ├── web.h/cpp           # Web data structure & merging logic
-│   ├── graph.h/cpp         # Interference graph (Based on class template)
+│   ├── graph.h             # Graph class (Based on class template)
+│   ├── interference.h/cpp  # Interference graph creationg
 │   ├── algorithms.h/cpp    # Basic, Spilling, Splitting, Free logic
-│   └── io.h/cpp            # Output file generation
-├── output/                 # Output files
+│   ├── io.h/cpp            # Output file generation
+│   └── datastructures.h    # Auxiliary data structures (Web, LiveRange, AssignmentConfig)
 ├── docs/                   # Generated Doxygen HTML documentation
-├── presentation.pdf        # Demo presentation slides
-├── data/                   # Input files
 ├── README.md               # This file
 └── Makefile                # Build script
 ```
