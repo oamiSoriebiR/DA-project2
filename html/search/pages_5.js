@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['batch_20mode_20used_20for_20grading_0',['1. Batch Mode (Used for grading)',['../index.html#autotoc_md10',1,'']]],
-  ['build_1',['Build',['../index.html#autotoc_md8',1,'']]],
-  ['build_20and_20run_2',['Build and Run',['../index.html#autotoc_md6',1,'']]]
+  ['compiler_20register_20allocation_0',['DA2026_PRJ2: Compiler Register Allocation',['../index.html',1,'']]],
+  ['complexity_20analysis_1',['Time Complexity Analysis',['../index.html#autotoc_md24',1,'']]]
 ];

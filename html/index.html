@@ -97,7 +97,7 @@ $(function(){initNavTree('index.html','',''); });
  <b>Team:</b> Group 4 - Class 5 <br  />
  <b>Members:</b></p>
 <ul>
-<li>Beatriz Remondes - <span class="tt">[ID]</span></li>
+<li>Beatriz Remondes - 202204353</li>
 <li>Nuno Coimbra - 202405191</li>
 <li>Simão Ribeiro - 202306111</li>
 </ul>
@@ -137,19 +137,18 @@ Requirements</h2>
 </ul>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
 Build</h2>
-<p><span class="tt">bash
-make
-`</span></p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
+<div class="fragment"><div class="line">make</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
 Execution Modes</h2>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
-1. Batch Mode (Used for grading)</h3>
+Batch Mode</h3>
 <p>Executes the allocation directly via command-line arguments. Errors/warnings are printed to <span class="tt">stderr</span>.</p>
 <div class="fragment"><div class="line">./allocator -b &lt;ranges.txt&gt; &lt;registers.txt&gt; &lt;output_allocation.txt&gt;</div>
+<div class="line">./allocator -b &lt;ranges.txt&gt; &lt;registers.txt&gt; &lt;output_allocation.txt&gt;</div>
 </div><!-- fragment --><p><em>Example:</em></p>
 <div class="fragment"><div class="line">./allocator -b test_cases/case1_ranges.txt test_cases/case1_regs.txt output.txt</div>
 </div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
-2. Interactive Mode</h3>
+Interactive Mode</h3>
 <p>Launches a user-friendly terminal menu to load files, select algorithms, and view results step-by-step.</p>
 <div class="fragment"><div class="line">./allocator</div>
 </div><!-- fragment --><hr  />
@@ -159,7 +158,8 @@ Input &amp; Output Formats</h1>
 Input Files</h2>
 <ol type="1">
 <li><b>Ranges File (<span class="tt">ranges.txt</span>):</b> Defines variables and their execution live ranges. <span class="tt">+</span> indicates a definition (write), <span class="tt">-</span> indicates the last use (read).</li>
-<li><b>Registers File (<span class="tt">registers.txt</span>):</b> Defines the maximum number of registers $N$ and the algorithm variant to use.<ul>
+<li><b>Registers File (<span class="tt">registers.txt</span>):</b> Defines the maximum number of registers $N$ and the algorithm variant to use.<br  />
+ Algorithm parameter must be manually changed to test other algorithms.<ul>
 <li><span class="tt">algorithm: basic</span></li>
 <li><span class="tt">algorithm: spilling, K</span> (where $K$ is max webs to spill)</li>
 <li><span class="tt">algorithm: splitting, K</span> (where $K$ is max webs to split)</li>
@@ -168,9 +168,19 @@ Input Files</h2>
 </li>
 </ol>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md15"></a>
-Output File (<span class="tt">allocation.txt</span>)</h2>
-<p>Generates a human-readable map of constructed webs and their assigned registers (<span class="tt">r0</span>, <span class="tt">r1</span>...) or memory (<span class="tt">M</span> if spilled/unable to allocate).</p>
-<hr  />
+Output File</h2>
+<p>Generates a human-readable map of constructed webs and their assigned registers (<span class="tt">r0</span>, <span class="tt">r1</span>...) or memory (<span class="tt">M</span> if spilled/unable to allocate).<br  />
+</p>
+<p>Example:<br  />
+ </p><div class="fragment"><div class="line">webs: 3</div>
+<div class="line">web0: 1+,2,3-</div>
+<div class="line">web1: 2+,3,4,5-</div>
+<div class="line">web2: 4+,5,6,7-</div>
+<div class="line">registers: 2</div>
+<div class="line">r0: web0</div>
+<div class="line">r1: web1</div>
+<div class="line">r0: web2</div>
+</div><!-- fragment --><hr  />
 <h1 class="doxsection"><a class="anchor" id="autotoc_md17"></a>
 Algorithm Design &amp; Heuristics</h1>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
@@ -195,18 +205,20 @@ Web Splitting Heuristic (T2.3)</h2>
 <hr  />
 <h1 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 Project Repository Structure</h1>
-<div class="fragment"><div class="line">.</div>
+<div class="fragment"><div class="line">├── data/                   # Input files</div>
+<div class="line">│   ├── output/             # Output files, 1 for each range file</div>
+<div class="line">│   ├── range/              # Variable ranges file</div>
+<div class="line">│   └── registers/          # Register &amp; algorithm file</div>
 <div class="line">├── src/                    # Source code files</div>
 <div class="line">│   ├── main.cpp            # Entry point, CLI &amp; Batch parser</div>
 <div class="line">│   ├── parser.h/cpp        # Live range &amp; input file parsing</div>
 <div class="line">│   ├── web.h/cpp           # Web data structure &amp; merging logic</div>
-<div class="line">│   ├── graph.h/cpp         # Interference graph (Based on class template)</div>
+<div class="line">│   ├── graph.h             # Graph class (Based on class template)</div>
+<div class="line">│   ├── interference.h/cpp  # Interference graph creationg</div>
 <div class="line">│   ├── algorithms.h/cpp    # Basic, Spilling, Splitting, Free logic</div>
-<div class="line">│   └── io.h/cpp            # Output file generation</div>
-<div class="line">├── output/                 # Output files</div>
+<div class="line">│   ├── io.h/cpp            # Output file generation</div>
+<div class="line">│   └── datastructures.h    # Auxiliary data structures (Web, LiveRange, AssignmentConfig)</div>
 <div class="line">├── docs/                   # Generated Doxygen HTML documentation</div>
-<div class="line">├── presentation.pdf        # Demo presentation slides</div>
-<div class="line">├── data/                   # Input files</div>
 <div class="line">├── README.md               # This file</div>
 <div class="line">└── Makefile                # Build script</div>
 </div><!-- fragment --><hr  />

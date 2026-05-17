@@ -352,9 +352,7 @@ bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     return true;
 }
 
-// Function for custom algorithm (to be designed)
-// src/algorithms.cpp
-
+// Function for custom algorithm (splitting + spilling based on dynamic efficiency threshold)
 bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     if (runBasicAlgorithm(graph, webs, k)){
         return true;

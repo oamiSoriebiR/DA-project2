@@ -5,7 +5,6 @@ var classGraph =
     [ "bfs", "classGraph.html#aa47a4130165550e208e7a063fce6983a", null ],
     [ "dfs", "classGraph.html#a911798b1a89f8c4ae90ba3eee849cff8", null ],
     [ "dfs", "classGraph.html#a510522c8221b321a82e687fe2f2cb484", null ],
-    [ "emitDOTFile", "classGraph.html#a4eca9d8e63b518989c767655b9b4691f", null ],
     [ "findVertex", "classGraph.html#a8b7b7465fbfd562e2a469f90a437ab75", null ],
     [ "getNumVertex", "classGraph.html#a0853eac15cdf0f06d63f4b8a7820ec71", null ],
     [ "getVertexSet", "classGraph.html#a923b43995f81ad9319bbc81a1e433e64", null ],

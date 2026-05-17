@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['edge_0',['Edge',['../classEdge.html',1,'Edge&lt; T &gt;'],['../classEdge.html#a9da861a03f920c89984be33515a5d870',1,'Edge::Edge()']]],
-  ['emitdotfile_1',['emitDOTFile',['../classGraph.html#a4eca9d8e63b518989c767655b9b4691f',1,'Graph']]],
-  ['empty_2',['empty',['../classMutablePriorityQueue.html#a2edbb1f4a6fa3ff735700dfcebebe8d4',1,'MutablePriorityQueue']]],
-  ['execution_20modes_3',['Execution Modes',['../index.html#autotoc_md9',1,'']]],
-  ['extractmin_4',['extractMin',['../classMutablePriorityQueue.html#a3880874d7364279ac0d6d31302b28853',1,'MutablePriorityQueue']]]
+  ['features_0',['Implemented Features',['../index.html#autotoc_md4',1,'']]],
+  ['file_1',['Output File',['../index.html#autotoc_md15',1,'']]],
+  ['fileexists_2',['fileExists',['../main_8cpp.html#afdd89841220a8b18e39e0844a833a18b',1,'main.cpp']]],
+  ['files_3',['Input Files',['../index.html#autotoc_md14',1,'']]],
+  ['findvertex_4',['findVertex',['../classGraph.html#a8b7b7465fbfd562e2a469f90a437ab75',1,'Graph']]],
+  ['formats_5',['Input &amp;amp; Output Formats',['../index.html#autotoc_md13',1,'']]],
+  ['free_20algorithm_20approach_20t2_204_6',['&quot;Free&quot; Algorithm Approach (T2.4)',['../index.html#autotoc_md20',1,'']]]
 ];

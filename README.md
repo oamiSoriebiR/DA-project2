@@ -34,7 +34,7 @@ When allocation is not possible, the project supports **spilling**, **splitting*
 - **Basic register allocation** using a simplify-and-color heuristic.
 - **Spilling heuristic** to move selected webs to memory.
 - **Splitting heuristic** to divide webs and reduce interference.
-- **Free strategy** combining the previous approaches.
+- **Free strategy** combining spilling and splitting dynamically based on a split-efficiency threshold.
 - **Documentation** with complexity analysis in the source code.
 
 ---
@@ -60,13 +60,6 @@ Executes the allocation directly via command-line arguments. Errors/warnings are
 
 ```bash
 ./allocator -b <ranges.txt> <registers.txt> <output_allocation.txt>
-./allocator -b <ranges.txt> <registers.txt> <output_allocation.txt>
-```
-
-*Example:*
-
-```bash
-./allocator -b test_cases/case1_ranges.txt test_cases/case1_regs.txt output.txt
 ```
 
 #### Interactive Mode
@@ -125,11 +118,12 @@ When a web cannot be colored, we analyze its internal execution points to find t
 
 ### "Free" Algorithm Approach (T2.4)
 
-Our custom algorithm uses a **Priority-Based Hybrid Strategy**. It modifies the basic simplify phase by using a *Smallest-Degree-First* priority queue instead of a standard stack. If an impasse is reached, it evaluates the graph's overall density:
+Our custom algorithm uses a **Dynamic Efficiency Threshold** strategy, actively combining both spilling and splitting based on graph pressure. When an impasse is reached, it evaluates the web with the highest degree:
 
-- If the graph is highly dense (near-clique), it triggers **Spilling**.
-- If the graph has distinct localized clusters of high degree, it triggers **Splitting**.
-This dynamic choice prevents the pitfalls of aggressively splitting highly connected graphs or foolishly spilling easily splittable webs.
+- **Split Efficiency Metric:** It calculates `Live_Range_length(Node) / Degree(Node)` for the target web.
+- **Dynamic Cutoff:** It compares this efficiency against a threshold inversely proportional to the number of available registers ($1.5 / N$).
+- **Decision:** If the web's efficiency falls below this cutoff (or if the web spans $\le 2$ lines), splitting would only cause fragment pollution, so the web is **spilled**. Otherwise, it is **split**.
+This adaptive choice prevents the pitfalls of over-splitting highly connected but short-lived webs.
 
 ---
 
@@ -145,7 +139,7 @@ This dynamic choice prevents the pitfalls of aggressively splitting highly conne
 │   ├── parser.h/cpp        # Live range & input file parsing
 │   ├── web.h/cpp           # Web data structure & merging logic
 │   ├── graph.h             # Graph class (Based on class template)
-│   ├── interference.h/cpp  # Interference graph creationg
+│   ├── interference.h/cpp  # Interference graph creation
 │   ├── algorithms.h/cpp    # Basic, Spilling, Splitting, Free logic
 │   ├── io.h/cpp            # Output file generation
 │   └── datastructures.h    # Auxiliary data structures (Web, LiveRange, AssignmentConfig)
@@ -164,4 +158,4 @@ This dynamic choice prevents the pitfalls of aggressively splitting highly conne
 - **Spilling Phase:** $O(V^2 \cdot W + W^2 \cdot L)$ where $V$ is the number of vertices, $W$ is the number of webs, and $L$ is the max number of lines in a web.
 - **Splitting & Free Phases:** $O(C \cdot (W^2 \cdot L + V^2))$ where $C$ is a constant max splits, $W$ is the number of webs, $L$ is the max lines per web, and $V$ is the number of vertices.
 
-*(See the `doc/html/` folder for detailed function-by-function Doxygen complexity notes).*
+*(See the `docs/html/` folder for detailed function-by-function Doxygen complexity notes).*

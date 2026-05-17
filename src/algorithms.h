@@ -56,7 +56,8 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
 /**
- * @brief Runs an advanced/free algorithm combining splitting with dynamic thresholds and spilling as a fallback.
+ * @brief Runs an advanced "free" strategy algorithm using a Dynamic Efficiency Threshold.
+ * It dynamically combines splitting and spilling based on graph pressure.
  * @param graph The interference graph.
  * @param webs Vector of Web structures.
  * @param k The number of available registers.
