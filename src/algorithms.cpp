@@ -256,7 +256,7 @@ bool splitWeb(std::vector<Web>& webs, int victimId) {
     std::set<int> preBottleneckLines;
     std::set<int> postBottleneckLines;
 
-    // YOUR INSIGHT: If there are conflicting lines, find the point where they end!
+    // If there are conflicting lines, find the point where they end!
     if (!conflictingLines.empty()) {
         // Get the absolute last line that has an active conflict
         int lastConflictLine = *conflictingLines.rbegin();
@@ -314,7 +314,7 @@ int selectSplittingVictim(Graph<int>& graph) {
     return victimId;
 }
 
-// Function for splitting algorithm - UPDATED WITH ATOMIC FALLBACK
+// Function for splitting algorithm 
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
     if (runBasicAlgorithm(graph, webs, k)){
         return true;
@@ -327,7 +327,7 @@ bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
         resetRegisterAssignment(webs);
         Graph<int> newGraph = buildInterferenceGraph(webs);
 
-        // Try to run basic algorithm on our newly adjusted webs
+        // Try to run basic algorithm 
         if (runBasicAlgorithm(newGraph, webs, k)) {
             return true;
         }
@@ -335,8 +335,8 @@ bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
         // If it failed, find victim to split
         int victimId = selectSplittingVictim(newGraph);
 
-        // If splitWeb returns false, the victim cannot be divided anymore.
-        // Break out to save and color the remaining segments!
+        // If splitWeb returns false, the victim cannot be divided anymore
+        // Break out to save and color the remaining segments
         if (!splitWeb(webs, victimId)) {
             break;
         }
@@ -392,9 +392,6 @@ bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
         size_t currentDegree = (vertex != nullptr) ? vertex->getAdj().size() : 1;
 
         // 2. THE EFFICIENCY THRESHOLD:
-        // Instead of a hardcoded '2', we adapt to the graph pressure.
-        // If the web's average line span per interference edge is too small,
-        // splitting it will only cause fragment pollution. 
         double splitEfficiency = static_cast<double>(currentWebSize) / currentDegree;
         double dynamicCutoff = 1.5 / static_cast<double>(k); 
 
