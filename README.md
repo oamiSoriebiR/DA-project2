@@ -1,7 +1,3 @@
-# PLACEHOLDER MADE WITH AI - NEED TO UPDATE WITH REAL CONTENT
-
----
-
 ## DA2026_PRJ2: Compiler Register Allocation
 
 **Course:** Analysis and Synthesis of Algorithms - Design of Algorithms (DA) L.EIC016  
@@ -11,7 +7,7 @@
 
 - Beatriz Remondes - `[ID]`
 - Nuno Coimbra - 202405191
-- simão Ribeiro - 202306111
+- Simão Ribeiro - 202306111
 
 ---
 
@@ -63,13 +59,13 @@ make
 Executes the allocation directly via command-line arguments. Errors/warnings are printed to `stderr`.
 
 ```bash
-./[executable_name] -b <ranges.txt> <registers.txt> <output_allocation.txt>
+./allocator -b <ranges.txt> <registers.txt> <output_allocation.txt>
 ```
 
 *Example:*
 
 ```bash
-./register_alloc -b test_cases/case1_ranges.txt test_cases/case1_regs.txt output.txt
+./allocator -b test_cases/case1_ranges.txt test_cases/case1_regs.txt output.txt
 ```
 
 #### 2. Interactive Mode
@@ -77,12 +73,12 @@ Executes the allocation directly via command-line arguments. Errors/warnings are
 Launches a user-friendly terminal menu to load files, select algorithms, and view results step-by-step.
 
 ```bash
-./[executable_name]
+./allocator
 ```
 
 ---
 
-## 📂 Input & Output Formats
+## Input & Output Formats
 
 ### Input Files
 
@@ -99,7 +95,7 @@ Generates a human-readable map of constructed webs and their assigned registers 
 
 ---
 
-## 🧠 Algorithm Design & Heuristics
+## Algorithm Design & Heuristics
 
 ### Web Spilling Heuristic (T2.2)
 
@@ -123,7 +119,7 @@ This dynamic choice prevents the pitfalls of aggressively splitting highly conne
 
 ---
 
-## 📁 Project Repository Structure
+## Project Repository Structure
 
 ```text
 .
@@ -144,11 +140,12 @@ This dynamic choice prevents the pitfalls of aggressively splitting highly conne
 
 ---
 
-## ⏱️ Time Complexity Analysis
+## Time Complexity Analysis
 
-- **Web Merging:** $O(V \cdot L^2)$ where $V$ is the number of variables and $L$ is the max number of ranges per variable.
-- **Interference Graph Construction:** $O(W^2 \cdot P)$ where $W$ is the number of merged webs and $P$ is the average number of program points per web.
-- **Basic Simplify/Color Phase:** $O(W^2)$ using an adjacency matrix / $O(W + E)$ using adjacency lists, executed iteratively.
-- **Spilling/Splitting Phases:** Multiplicative factor of $O(K)$ on top of the Basic phase, where $K$ is the allowed spill/split limit.
+- **Web Merging:** $O(R^2 \cdot L)$ where $R$ is the number of ranges and $L$ is the max lines per range.
+- **Interference Graph Construction:** $O(W^2 \cdot L)$ where $W$ is the number of webs and $L$ is the max number of lines in a web.
+- **Basic Simplify/Color Phase:** $O(V^2 + V \cdot k)$ where $V$ is the number of vertices (webs) and $k$ is the number of registers.
+- **Spilling Phase:** $O(V^2 \cdot W + W^2 \cdot L)$ where $V$ is the number of vertices, $W$ is the number of webs, and $L$ is the max number of lines in a web.
+- **Splitting & Free Phases:** $O(C \cdot (W^2 \cdot L + V^2))$ where $C$ is a constant max splits, $W$ is the number of webs, $L$ is the max lines per web, and $V$ is the number of vertices.
 
 *(See the `doc/html/` folder for detailed function-by-function Doxygen complexity notes).*
