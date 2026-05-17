@@ -41,9 +41,8 @@
         \item \textbf{Alterations \& Additions:}
         \begin{itemize}
             \item \textbf{Undirected Semantics:} Interference graphs are inherently undirected. Edge additions ensure symmetry ($A \rightarrow B$ and $B \rightarrow A$).
-            \item \textbf{DOT File Emission:} Added \texttt{emitDOTFile()} to export the graph to Graphviz format for visual debugging and presentation.
-            \item \textbf{Degree Tracking:} Integrated degree management (\texttt{getIndegree()}) crucial for the \textit{Smallest-Degree-First} heuristic and the Simplify phase.
-            \item \textbf{Mutable Priority Queue:} Integrated \texttt{MutablePriorityQueue} to efficiently extract minimum degree nodes during the simplification stack building.
+            \item \textbf{Node/Edge Removal:} Utilized \texttt{removeVertex} to dynamically simulate web spilling and graph simplification.
+            \item \textbf{Incoming Edges Tracking:} Added \texttt{getIncoming()} and indegree management to support bidirectional edge analysis.
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -76,14 +75,15 @@
 
 \begin{frame}{"Free" Algorithm Strategy (T2.4)}
     \begin{itemize}
-        \item \textbf{Priority-Based Hybrid Approach.}
-        \item Replaces standard stack with a \textit{Smallest-Degree-First} priority queue.
-        \item \textbf{Dynamic Impasse Resolution:}
+        \item \textbf{Dynamic Efficiency Threshold Approach.}
+        \item Evaluates the web with the highest degree when an impasse is reached.
+        \item \textbf{Split Efficiency Metric:} $\frac{\text{Live\_Range\_length(Node)}}{\text{Degree(Node)}}$
+        \item \textbf{Adaptive Decision Making:}
         \begin{itemize}
-            \item \textbf{High Density (Near-Clique):} Triggers Spilling.
-            \item \textbf{Localized Clusters:} Triggers Splitting.
+            \item \textbf{Spill:} If efficiency $< 1.5 / N$ (dynamic cutoff) or web spans $\le 2$ lines.
+            \item \textbf{Split:} If efficiency is above the threshold.
         \end{itemize}
-        \item Prevents aggressive splitting of highly connected graphs and unnecessary spilling of easily splittable webs.
+        \item Prevents fragment pollution from over-splitting highly connected, short-lived webs.
     \end{itemize}
 \end{frame}
 
@@ -98,7 +98,7 @@
         \item \textbf{Splitting Logic:} 
         \begin{itemize}
             \item Ensuring semantic correctness when dividing a web (part 1 \& part 2).
-            \item Updating the interference graph dynamically without a full rebuild.
+            \item Efficiently rebuilding the interference graph after topological changes.
         \end{itemize}
         \item \textbf{Hybrid Strategy Tuning:} 
         \begin{itemize}
