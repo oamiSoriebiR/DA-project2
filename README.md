@@ -1,6 +1,6 @@
-## DA2026_PRJ2: Compiler Register Allocation
+# DA2026_PRJ2: Compiler Register Allocation
 
-**Course:** Analysis and Synthesis of Algorithms - Design of Algorithms (DA) L.EIC016  
+**Course:** Design of Algorithms (DA) L.EIC016  
 **Academic Year:** Spring 2026  
 **Team:** Group 4 - Class 5  
 **Members:**
