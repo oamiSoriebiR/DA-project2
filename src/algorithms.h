@@ -12,7 +12,10 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 int selectSpillVictim(Graph<int>& graph, const std::vector<Web>& webs);
 bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
+bool splitWeb(std::vector<Web>& webs, int victimId);
+int selectSplittingVictim(Graph<int>& graph);
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
+
 bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
 
 #endif //ALGORITHMS_H
