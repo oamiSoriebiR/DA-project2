@@ -110,7 +110,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a68fdb96d675636e293019cb314f707bd" id="r_a68fdb96d675636e293019cb314f707bd"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a68fdb96d675636e293019cb314f707bd">runSpillingAlgorithm</a> (<a class="el" href="classGraph.html">Graph</a>&lt; int &gt; &amp;graph, std::vector&lt; <a class="el" href="structWeb.html">Web</a> &gt; &amp;<a class="el" href="main_8cpp.html#ac09f6c3da8053879c7dffe655a51ba44">webs</a>, int k)</td></tr>
 <tr class="memdesc:a68fdb96d675636e293019cb314f707bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the register allocation algorithm with support for spilling to memory. If the basic algorithm fails, it iteratively spills the most suitable webs until the graph is colorable.  <br /></td></tr>
 <tr class="memitem:afa814d430bbc9e02c9da69788173e641" id="r_afa814d430bbc9e02c9da69788173e641"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#afa814d430bbc9e02c9da69788173e641">splitWeb</a> (std::vector&lt; <a class="el" href="structWeb.html">Web</a> &gt; &amp;<a class="el" href="main_8cpp.html#ac09f6c3da8053879c7dffe655a51ba44">webs</a>, int victimId)</td></tr>
+<tr class="memdesc:afa814d430bbc9e02c9da69788173e641"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits a web into two smaller webs at the point where interference ends, to increase colorability.  <br /></td></tr>
 <tr class="memitem:a8d3cf3a38a282821e541b6ad5f0196ff" id="r_a8d3cf3a38a282821e541b6ad5f0196ff"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a8d3cf3a38a282821e541b6ad5f0196ff">selectSplittingVictim</a> (<a class="el" href="classGraph.html">Graph</a>&lt; int &gt; &amp;graph)</td></tr>
+<tr class="memdesc:a8d3cf3a38a282821e541b6ad5f0196ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects the best victim web to split based on a heuristic metric (maximum degree).  <br /></td></tr>
 <tr class="memitem:a23820c3a717762dda96d7a768e312a71" id="r_a23820c3a717762dda96d7a768e312a71"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a23820c3a717762dda96d7a768e312a71">runSplittingAlgorithm</a> (<a class="el" href="classGraph.html">Graph</a>&lt; int &gt; &amp;graph, std::vector&lt; <a class="el" href="structWeb.html">Web</a> &gt; &amp;<a class="el" href="main_8cpp.html#ac09f6c3da8053879c7dffe655a51ba44">webs</a>, int k)</td></tr>
 <tr class="memdesc:a23820c3a717762dda96d7a768e312a71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the register allocation algorithm with support for web splitting. If the graph cannot be colored, it attempts to split webs into smaller segments to reduce interference.  <br /></td></tr>
 <tr class="memitem:ad4bb12f3976c76f9f018ef42ab65e1c4" id="r_ad4bb12f3976c76f9f018ef42ab65e1c4"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ad4bb12f3976c76f9f018ef42ab65e1c4">runFreeAlgorithm</a> (<a class="el" href="classGraph.html">Graph</a>&lt; int &gt; &amp;graph, std::vector&lt; <a class="el" href="structWeb.html">Web</a> &gt; &amp;<a class="el" href="main_8cpp.html#ac09f6c3da8053879c7dffe655a51ba44">webs</a>, int k)</td></tr>
@@ -342,6 +344,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Selects the best victim web to split based on a heuristic metric (maximum degree). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>The interference graph. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The ID of the web chosen to be split. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Time Complexity: O(V), where V is the number of vertices in the interference graph. </dd></dl>
+
 </div>
 </div>
 <a id="afa814d430bbc9e02c9da69788173e641" name="afa814d430bbc9e02c9da69788173e641"></a>
@@ -362,6 +374,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Splits a web into two smaller webs at the point where interference ends, to increase colorability. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname"><a class="el" href="main_8cpp.html#ac09f6c3da8053879c7dffe655a51ba44">webs</a></td><td>The vector of <a class="el" href="structWeb.html" title="Represents a Web, which is an independent live range of a variable.">Web</a> structures. The newly created web fragment is appended to this list. </td></tr>
+    <tr><td class="paramname">victimId</td><td>The ID of the web to split. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the web was successfully split, false if it could not be split (e.g., only 1 line). </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Time Complexity: O(W * L * log(L)), where W is the number of webs and L is the number of lines in the victim web. </dd></dl>
 
 </div>
 </div>

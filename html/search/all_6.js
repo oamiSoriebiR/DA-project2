@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['checkinterference_0',['checkInterference',['../interference_8cpp.html#a3acd197867a4916d1b7c84bffdcd7d59',1,'checkInterference(const Web &amp;w1, const Web &amp;w2):&#160;interference.cpp'],['../interference_8h.html#a3acd197867a4916d1b7c84bffdcd7d59',1,'checkInterference(const Web &amp;w1, const Web &amp;w2):&#160;interference.cpp']]],
-  ['compiler_20register_20allocation_1',['DA2026_PRJ2: Compiler Register Allocation',['../index.html',1,'']]],
-  ['complexity_20analysis_2',['Time Complexity Analysis',['../index.html#autotoc_md24',1,'']]],
-  ['config_3',['config',['../main_8cpp.html#a741bc09be6d0b344e00941d2191903f8',1,'main.cpp']]]
+  ['da2026_5fprj2_3a_20compiler_20register_20allocation_0',['DA2026_PRJ2: Compiler Register Allocation',['../index.html',1,'']]],
+  ['datastructures_2eh_1',['datastructures.h',['../datastructures_8h.html',1,'']]],
+  ['decreasekey_2',['decreaseKey',['../classMutablePriorityQueue.html#a0878839cc1d2dba2b8ab2e589ecc6405',1,'MutablePriorityQueue']]],
+  ['design_20heuristics_3',['Algorithm Design &amp;amp; Heuristics',['../index.html#autotoc_md17',1,'']]],
+  ['dfs_4',['dfs',['../classGraph.html#a911798b1a89f8c4ae90ba3eee849cff8',1,'Graph::dfs() const'],['../classGraph.html#a510522c8221b321a82e687fe2f2cb484',1,'Graph::dfs(const T &amp;source) const']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['project_20overview_0',['Project Overview',['../index.html#autotoc_md2',1,'']]],
-  ['project_20repository_20structure_1',['Project Repository Structure',['../index.html#autotoc_md22',1,'']]]
+  ['spilling_20heuristic_20t2_202_0',['Web Spilling Heuristic (T2.2)',['../index.html#autotoc_md18',1,'']]],
+  ['splitting_20heuristic_20t2_203_1',['Web Splitting Heuristic (T2.3)',['../index.html#autotoc_md19',1,'']]],
+  ['structure_2',['Project Repository Structure',['../index.html#autotoc_md22',1,'']]]
 ];

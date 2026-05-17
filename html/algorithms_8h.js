@@ -5,5 +5,7 @@ var algorithms_8h =
     [ "runFreeAlgorithm", "algorithms_8h.html#ad4bb12f3976c76f9f018ef42ab65e1c4", null ],
     [ "runSpillingAlgorithm", "algorithms_8h.html#a68fdb96d675636e293019cb314f707bd", null ],
     [ "runSplittingAlgorithm", "algorithms_8h.html#a23820c3a717762dda96d7a768e312a71", null ],
-    [ "selectSpillVictim", "algorithms_8h.html#a3b308b4e8428f82c7e5a7a6412da9b1e", null ]
+    [ "selectSpillVictim", "algorithms_8h.html#a3b308b4e8428f82c7e5a7a6412da9b1e", null ],
+    [ "selectSplittingVictim", "algorithms_8h.html#a8d3cf3a38a282821e541b6ad5f0196ff", null ],
+    [ "splitWeb", "algorithms_8h.html#afa814d430bbc9e02c9da69788173e641", null ]
 ];

@@ -5,7 +5,6 @@
 #include "Graph.h"
 #include "datastructures.h"
 #include <vector>
-
 /**
  * @brief Resets the assigned registers of all webs to 0.
  * @param webs Vector of Web structures to reset.
@@ -54,6 +53,23 @@ bool runSpillingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
  * @note Time Complexity: O(C * (W^2 * L + V^2)), where C is a constant max splits, W is the number of webs, L is the max lines per web, and V is the number of vertices.
  */
 bool runSplittingAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k);
+
+/**
+ * @brief Splits a web into two smaller webs at the point where interference ends, to increase colorability.
+ * @param webs The vector of Web structures. The newly created web fragment is appended to this list.
+ * @param victimId The ID of the web to split.
+ * @return True if the web was successfully split, false if it could not be split (e.g., only 1 line).
+ * @note Time Complexity: O(W * L * log(L)), where W is the number of webs and L is the number of lines in the victim web.
+ */
+bool splitWeb(std::vector<Web>& webs, int victimId);
+
+/**
+ * @brief Selects the best victim web to split based on a heuristic metric (maximum degree).
+ * @param graph The interference graph.
+ * @return The ID of the web chosen to be split.
+ * @note Time Complexity: O(V), where V is the number of vertices in the interference graph.
+ */
+int selectSplittingVictim(Graph<int>& graph);
 
 /**
  * @brief Runs an advanced/free algorithm combining splitting with dynamic thresholds and spilling as a fallback.

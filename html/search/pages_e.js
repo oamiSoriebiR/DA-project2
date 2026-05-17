@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['output_20file_20allocation_20txt_0',['Output File (&lt;span class=&quot;tt&quot;&gt;allocation.txt&lt;/span&gt;)',['../index.html#autotoc_md15',1,'']]],
-  ['output_20formats_1',['Input &amp;amp; Output Formats',['../index.html#autotoc_md13',1,'']]],
-  ['overview_2',['Project Overview',['../index.html#autotoc_md2',1,'']]]
+  ['register_20allocation_0',['DA2026_PRJ2: Compiler Register Allocation',['../index.html',1,'']]],
+  ['repository_20structure_1',['Project Repository Structure',['../index.html#autotoc_md22',1,'']]],
+  ['requirements_2',['Requirements',['../index.html#autotoc_md7',1,'']]],
+  ['run_3',['Build and Run',['../index.html#autotoc_md6',1,'']]]
 ];

@@ -6,13 +6,13 @@ var index =
       [ "Requirements", "index.html#autotoc_md7", null ],
       [ "Build", "index.html#autotoc_md8", null ],
       [ "Execution Modes", "index.html#autotoc_md9", [
-        [ "1. Batch Mode (Used for grading)", "index.html#autotoc_md10", null ],
-        [ "2. Interactive Mode", "index.html#autotoc_md11", null ]
+        [ "Batch Mode", "index.html#autotoc_md10", null ],
+        [ "Interactive Mode", "index.html#autotoc_md11", null ]
       ] ]
     ] ],
     [ "Input &amp; Output Formats", "index.html#autotoc_md13", [
       [ "Input Files", "index.html#autotoc_md14", null ],
-      [ "Output File (<span class=\"tt\">allocation.txt</span>)", "index.html#autotoc_md15", null ]
+      [ "Output File", "index.html#autotoc_md15", null ]
     ] ],
     [ "Algorithm Design &amp; Heuristics", "index.html#autotoc_md17", [
       [ "Web Spilling Heuristic (T2.2)", "index.html#autotoc_md18", null ],
