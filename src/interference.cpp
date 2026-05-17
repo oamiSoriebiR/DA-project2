@@ -2,10 +2,7 @@
 #include "datastructures.h"
 #include <vector>
 
-/**
- * Verifica a interseção entre duas Webs.
- * Como as linhas estão num std::set (ordenado), usamos a técnica de dois ponteiros.
- */
+// Checks for intersection of 2 webs
 bool checkInterference(const Web& w1, const Web& w2) {
     auto it1 = w1.lines.begin();
     auto it2 = w2.lines.begin();
@@ -16,16 +13,16 @@ bool checkInterference(const Web& w1, const Web& w2) {
         } else if (*it2 < *it1) {
             ++it2;
         } else {
-            return true; // Encontrou pelo menos uma linha em comum
+            return true;
         }
     }
     return false;
 }
 
 /**
- * Constrói o Grafo de Interferência.
- * Simulamos a não-direcionalidade adicionando arestas
- *  nos dois sentidos para cada interferência detetada.
+ * Build interference graph
+ * Non-Directed graph is simulated by adding outgoing edges
+ * on both webs when they intersect
  */
 Graph<int> buildInterferenceGraph(const std::vector<Web>& webs) {
     Graph<int> ig;

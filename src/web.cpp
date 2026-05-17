@@ -5,9 +5,7 @@
 #include <iterator>
 #include "datastructures.h"
 
-/**
- * Verifica se dois LiveRanges se intercetam (partilham pelo menos uma linha).
- */
+// Checks if 2 LiveRanges intersect
 bool rangesIntersect(const LiveRange& r1, const LiveRange& r2) {
     auto it1 = r1.lines.begin();
     auto it2 = r2.lines.begin();
@@ -32,7 +30,7 @@ std::vector<Web> webLinking(std::vector<LiveRange> ranges) {
         return finalWebs;
     }
 
-    // Agrupar LiveRanges por nome de variável
+    // Group LiveRanges by var name
     std::map<std::string, std::vector<LiveRange>> varGroups;
     for (const auto& r : ranges) {
         varGroups[r.varName].push_back(r);
@@ -40,12 +38,12 @@ std::vector<Web> webLinking(std::vector<LiveRange> ranges) {
 
     int webIdCounter = 0;
 
-    // Para cada variável, identificar as teias (webs)
+    // For each variable, identify webs
     for (auto& entry : varGroups) {
         const std::string& varName = entry.first;
         std::vector<LiveRange>& varRanges = entry.second;
 
-        // Vetor para marcar quais ranges já foram processados nesta variável
+        // Vector to save which ranges have been processed
         std::vector<bool> visited(varRanges.size(), false);
 
         for (size_t i = 0; i < varRanges.size(); ++i) {
@@ -64,10 +62,10 @@ std::vector<Web> webLinking(std::vector<LiveRange> ranges) {
             while(head < q.size()){
                 size_t currIdx = q[head++];
                 
-                // Adicionar as linhas deste range à Web
+                // Add all lines of this range to web
                 newWeb.lines.insert(varRanges[currIdx].lines.begin(), varRanges[currIdx].lines.end());
 
-                // Verificar outros ranges da mesma variável que intercetam este
+                // Check other ranges of the variable that intersect with the one being processed
                 for (size_t j = 0; j < varRanges.size(); ++j) {
                     if (j != currIdx && !visited[j] && rangesIntersect(varRanges[currIdx], varRanges[j])) {
                         visited[j] = true;

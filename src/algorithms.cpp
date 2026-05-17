@@ -31,7 +31,7 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
 
     bool spillOccurred = false;
 
-    // Phase 1: Simplificação (Simplify)
+    // Simplification
     while (!activeNodes.empty()) {
         int nodeToRemove = -1;
 
@@ -70,7 +70,7 @@ bool runBasicAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k){
         }
     }
 
-    // Phase 2: Seleção/Coloração (Select)
+    // Selection
     while (!S.empty()) {
         int id = S.top();
         S.pop();
@@ -272,8 +272,8 @@ bool splitWeb(std::vector<Web>& webs, int victimId) {
         }
     }
 
-    // Edge Case Protection: If the conflict spans the entire web, 
-    // or if the slice results in an empty side, fall back cleanly to the midpoint.
+    //  If the conflict spans the entire web, or if the slice results
+    //  in an empty side, fall back cleanly to the midpoint.
     if (preBottleneckLines.empty() || postBottleneckLines.empty()) {
         std::vector<int> sortedLines(victimWeb.lines.begin(), victimWeb.lines.end());
         size_t mid = sortedLines.size() / 2;
@@ -379,7 +379,7 @@ bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
 
         int victimId = selectSplittingVictim(newGraph);
 
-        // 1. DYNAMIC EFFICIENCY CALCULATION
+        // Dynamic efficiency calculator
         size_t currentWebSize = 0;
         for (const auto& w : webs) {
             if (w.id == victimId) {
@@ -391,7 +391,7 @@ bool runFreeAlgorithm(Graph<int>& graph, std::vector<Web>& webs, int k) {
         auto vertex = newGraph.findVertex(victimId);
         size_t currentDegree = (vertex != nullptr) ? vertex->getAdj().size() : 1;
 
-        // 2. THE EFFICIENCY THRESHOLD:
+        // Efficiency threshold
         double splitEfficiency = static_cast<double>(currentWebSize) / currentDegree;
         double dynamicCutoff = 1.5 / static_cast<double>(k); 
 

@@ -36,21 +36,17 @@ std::vector<LiveRange> parseRanges(const std::string& input) {
         line = trim(line);
         if (line.empty() || line[0] == '#') continue;
 
-         // Formato esperado: "varName: 1+, 2, 3-"
         size_t colonPos = line.find(':');
         if (colonPos == std::string::npos) continue;
 
         LiveRange lr;
-        // Extrair o nome da variável (antes dos ':')
         lr.varName = trim(line.substr(0, colonPos));
 
-        // Extrair os números (depois dos dois pontos)
         std::string rightSide = line.substr(colonPos + 1);
         std::vector<int> nums = extractInts(rightSide);
 
         if (nums.empty()) continue;
 
-        // Inserir números na LiveRange
         for (int n : nums) {
             lr.lines.insert(n);
         }
@@ -75,7 +71,6 @@ AssignmentConfig parseRegisters(const std::string& input) {
         line = trim(line);
         if (line.empty() || line[0] == '#') continue;
 
-        // Guardar número de registos        
         if (line.find("registers:") == 0) {
             std::string contentAfter = trim(line.substr(10));
             auto nums = extractInts(contentAfter);
@@ -83,7 +78,6 @@ AssignmentConfig parseRegisters(const std::string& input) {
             continue;
         }
 
-        // Guardar tipo de algoritmo
         if (line.find("algorithm:") == 0) {
             config.algorithm = trim(line.substr(10));
             continue;

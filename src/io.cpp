@@ -10,10 +10,10 @@ bool writeAllocationOutput(const std::string& outputPath, const std::vector<Web>
         return false;
     }
 
-    // 1. Print the total number of webs
+    // Print the total number of webs
     file << "webs: " << webs.size() << "\n";
 
-    // 2. Print each web's details (preserving formatting expectations)
+    // Print each web's details (preserving formatting expectations)
     for (const auto& w : webs) {
         file << "web" << w.id << ": ";
         
@@ -33,7 +33,7 @@ bool writeAllocationOutput(const std::string& outputPath, const std::vector<Web>
         file << "\n";
     }
 
-    // 3. Print the number of physical hardware registers utilized
+    // Print the number of physical hardware registers utilized
     if (allocationSucceeded) {
         file << "registers: " << config.k << "\n";
         
